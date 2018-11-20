@@ -8,17 +8,18 @@ import utils
 import time
 from torch.autograd import Variable
 from model.CNN_LSTM import CNN_LSTM
+from model.LSTM_CNN import LSTM_CNN
 from model.blstm import BLSTM
 from model.lstm import LSTM
 from model.cnn import CNN
 from utils import MyDataSet
 
-BATCH_SIZE = 8
+BATCH_SIZE = 28
 EPOCH = 100
 max_len = 40
 l_rate = 0.5
 ReTrain = True
-Model = "CNN_LSTM"
+Model = "LSTM_CNN"
 
 
 # 开始运行程序
@@ -92,6 +93,10 @@ def prepare(embeddings, trainSentence, trainLabel, train_sentence_length, testSe
         model = CNN(embeddings, 100)
     elif Model == 'CNN_LSTM':
         model = CNN_LSTM(embeddings, sequence_length=40, vocab_size=embeddings.size(0), embedding_size=embeddings.size(1),
+                         filter_sizes=[1, 2, 3],
+                         num_filters=32, num_classes=2, dropout=0.5, num_hidden=100, num_layers=1)
+    elif Model == 'LSTM_CNN':
+        model = LSTM_CNN(embeddings, sequence_length=40, vocab_size=embeddings.size(0), embedding_size=embeddings.size(1),
                          filter_sizes=[1, 2, 3],
                          num_filters=32, num_classes=2, dropout=0.5, num_hidden=100, num_layers=1)
     model.cuda()
