@@ -33,7 +33,7 @@ class CNN_LSTM(nn.Module):
                             batch_first=True,
                             bidirectional=False).cuda()  # 不是双向的,即不是BLSTM
 
-        self.out = nn.Linear(in_features=96, out_features=num_classes)
+        self.out = nn.Linear(in_features=100, out_features=num_classes)
 
     def _fetch(self, sen_batch, sen_length):
         batch_size = sen_batch.size(0)
@@ -61,7 +61,7 @@ class CNN_LSTM(nn.Module):
             cnn_outputs.append(pool)
         num_filters_total = self.num_filters * len(self.filter_sizes)
         h_pool = torch.cat(cnn_outputs, 1)
-        sen_batch = h_pool.view(-1, num_filters_total)  # 128*96*1
+        sen_batch = h_pool.view(-1, num_filters_total, 1)  # 128*96*1
         sen_batch, _ = self.lstm(sen_batch)  # 128*96*100
         sen_batch = sen_batch.contiguous().view(batch_size, -1, self.num_hidden)  # (batch, sen_len, hid)
         # sen_batch = self._fetch(sen_batch, sen_length)
