@@ -62,11 +62,11 @@ class CNN_LSTM(nn.Module):
         num_filters_total = self.num_filters * len(self.filter_sizes)
         h_pool = torch.cat(cnn_outputs, 1)
         sen_batch = h_pool.view(-1, num_filters_total)  # 128*96*1
-        # sen_batch, _ = self.lstm(sen_batch)  # 128*96*100
-        # sen_batch = sen_batch.contiguous().view(batch_size, -1, self.num_hidden)  # (batch, sen_len, hid)
-        # # sen_batch = self._fetch(sen_batch, sen_length)
-        # sen_batch = sen_batch.permute([1, 0, 2])
-        # sen_batch = sen_batch[len(sen_batch)-1]
+        sen_batch, _ = self.lstm(sen_batch)  # 128*96*100
+        sen_batch = sen_batch.contiguous().view(batch_size, -1, self.num_hidden)  # (batch, sen_len, hid)
+        # sen_batch = self._fetch(sen_batch, sen_length)
+        sen_batch = sen_batch.permute([1, 0, 2])
+        sen_batch = sen_batch[len(sen_batch)-1]
         output = self.out(sen_batch)
         output = F.softmax(output)
         # print(sen_batch.size(), output.size(), output)
